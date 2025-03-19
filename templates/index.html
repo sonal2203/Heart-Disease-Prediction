@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction Input Form</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #6dd5ed, #2193b0);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 80%;
+            max-width: 900px;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .form-control:last-child {
+            margin-right: 0;
+        }
+
+        .form-control label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-control input,
+        .form-control select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control input:focus,
+        .form-control select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            margin-top: 25px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #prediction-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="heartForm" method="POST" action="/predict">
+        <h1>Heart Disease Prediction Input</h1>
+        <div class="form-row">
+            <div class="form-control">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" placeholder="Age" required />
+            </div>
+            <div class="form-control">
+                <label for="sex">Sex (0/1)</label>
+                <select id="sex" name="sex" required>
+                    <option value="1">Male</option>
+                    <option value="0">Female</option>
+                </select>
+            </div>
+            <div class="form-control">
+                <label for="cp">Chest Pain</label>
+                <input type="number" id="cp" name="cp" placeholder="Chest Pain" required />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-control">
+                <label for="trestbps">Resting BP</label>
+                <input type="number" id="trestbps" name="trestbps" placeholder="Resting BP" required />
+            </div>
+            <div class="form-control">
+                <label for="chol">Cholesterol</label>
+                <input type="number" id="chol" name="chol" placeholder="Cholesterol" required />
+            </div>
+            <div class="form-control">
+                <label for="fbs">Fasting BS (>120)</label>
+                <select id="fbs" name="fbs" required>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-control">
+                <label for="restecg">Rest ECG</label>
+                <input type="number" id="restecg" name="restecg" placeholder="Rest ECG" required />
+            </div>
+            <div class="form-control">
+                <label for="thalach">Max HR</label>
+                <input type="number" id="thalach" name="thalach" placeholder="Max HR" required />
+            </div>
+            <div class="form-control">
+                <label for="exang">Ex Angina (0/1)</label>
+                <select id="exang" name="exang" required>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-control">
+                <label for="oldpeak">ST Depr.</label>
+                <input type="number" id="oldpeak" name="oldpeak" placeholder="ST Depr." required />
+            </div>
+            <div class="form-control">
+                <label for="slope">ST Slope (0-2)</label>
+                <input type="number" id="slope" name="slope" placeholder="ST Slope" required />
+            </div>
+            <div class="form-control">
+                <label for="ca">Major Vessels (0-3)</label>
+                <input type="number" id="ca" name="ca" placeholder="Major Vessels" required />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-control">
+                <label for="thal">Thalassemia (0-3)</label>
+                <input type="number" id="thal" name="thal" placeholder="Thalassemia" required />
+            </div>
+        </div>
+
+        <button type="submit">Predict</button>
+    </form>
+    <div id="prediction-result">
+        {% if prediction_text %}
+        {{ prediction_text }}
+        {% endif %}
+    </div>
+    {% if prediction_text %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('prediction-result').style.display = 'block';
+        });
+    </script>
+    {% endif %}
+</body>
+
+</html>
